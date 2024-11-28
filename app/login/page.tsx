@@ -1,38 +1,46 @@
-"use client"; // form.tsx
+"use client";
 
+import AlertMessage from "@/components/AlertMessage";
 import { loginSchema } from "@/lib/schemas";
 import { login } from "@/services/actions/user.actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
-import { useActionState} from "react";
+import { useActionState, useEffect, useState } from "react";
 
 const LoginForm = () => {
   const [lastResult, action] = useActionState(login, undefined);
   const [form, fields] = useForm({
     lastResult,
-
-    // Reuse the validation logic on the client
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: loginSchema });
     },
 
-    // Validate the form on blur event triggered
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
-//   useEffect(() => {
-//     if (lastResult?.status === "success") alert("Success"+lastResult.error);
-//   }, [lastResult?.error,lastResult?.status]);
+
+  const [isVisible, setIsVisible] = useState(true);
+
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+  useEffect(() => {
+    if (lastResult?.status === "success") {
+      setIsVisible(true);
+    }
+  }, [lastResult]);
   return (
     <form id={form.id} onSubmit={form.onSubmit} action={action} noValidate>
-      
-      <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-     {/* Display Global Error */}
-     {lastResult?.user && (
-        <div className="text-red-500">{lastResult?.user.name}</div>
-      )}
+      <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 ">
+        {lastResult?.user && (
+          <AlertMessage
+            type="error"
+            message={lastResult?.message || "Something went wrong!"}
+            onClose={handleClose}
+            isVisible={isVisible}
+          />
+        )}
 
-        
         <section className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
           <div className="flex flex-col">
             <label className="font-bold">Email</label>

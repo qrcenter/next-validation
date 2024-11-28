@@ -28,7 +28,7 @@ export async function login(
     const res: LoginActionResult = {
       ...submission.reply(),
       user: data,
-      message: "sucessssss",
+      message: "User added successfuly",
     };
 
     return res;
