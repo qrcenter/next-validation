@@ -1,11 +1,11 @@
 import { loginSchema } from "@/lib/schemas";
-import { LoginActionResult } from "@/lib/types";
+import { ActionResult, User } from "@/lib/types";
 import { parseWithZod } from "@conform-to/zod";
 
 export async function login(
   prevState: unknown,
   formData: FormData
-): Promise<LoginActionResult> {
+): Promise<ActionResult<User>> {
   const submission = parseWithZod(formData, {
     schema: loginSchema,
   });
@@ -24,11 +24,10 @@ export async function login(
     }
 
     const data = await response.json();
-    console.log(data);
-    const res: LoginActionResult = {
+    const res: ActionResult<User> = {
       ...submission.reply(),
-      user: data,
-      message: "User added successfuly",
+      resData: data,
+      resMessage: "User added successfuly",
     };
 
     return res;
@@ -36,7 +35,7 @@ export async function login(
     console.log(error);
     return {
       ...submission.reply(),
-      message: "An error occurred while fetching user data.",
+      resMessage: "An error occurred while fetching user data.",
     };
   }
 }

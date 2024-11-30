@@ -32,10 +32,10 @@ const LoginForm = () => {
   return (
     <form id={form.id} onSubmit={form.onSubmit} action={action} noValidate>
       <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 ">
-        {lastResult?.user && (
+        {lastResult?.resData && (
           <AlertMessage
             type="error"
-            message={lastResult?.message || "Something went wrong!"}
+            message={lastResult?.resMessage || "Something went wrong!"}
             onClose={handleClose}
             isVisible={isVisible}
           />
